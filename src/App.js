@@ -4,7 +4,8 @@ import Axios from "axios"
 import {BrowserRouter, Link, Route, Routes, Switch, useSearchParams} from 'react-router-dom'
 import { Table } from "reactstrap";
 import {Bar} from 'react-chartjs-2';
-import {Line} from 'react-chartjs-2'; 
+import {Line} from 'react-chartjs-2';  
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -82,21 +83,29 @@ function App() {
 
   const getCovidCasesAPI =()=>{    
     Axios.get("https://data.gov.sg/api/action/datastore_search?resource_id=6c14814b-09b7-408e-80c4-db3d393c7c15&limit=1000").then((response)=>{
-    console.log(response.data); 
+    console.log(response.data);  
     setcovidCaseNumStatus(response.data);
     setCondition1(true);
     setLoading(false); 
     setDataRdy(true)
   }) 
-
+  
 }
+
+const setPostReqAPI = ()=>{
+  const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
+    pr_date:[paramKey.pr_date],
+    age_group:[paramKey.age_group],
+    count_of_case: [paramKey.count_of_case] 
+      }) 
+    );
+    
+    window.location.reload();
+    CovidgetSumDataYest == "Did not managed to retrieve data, press button again" ? alert("Unsuccessfull")  :  alert("Saved Successfully") 
+}
+
   const getAccCovidCases =()=>{  
-    const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
-      pr_date:[paramKey.pr_date],
-      age_group:[paramKey.age_group],
-      count_of_case: [paramKey.count_of_case] 
-        })
-      );
+
       var yesterday = new Date(Date.now() - 86400000);
       // console.log(JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12)== JSON.stringify(yesterday.getDate()) ) 
       const totalyest = CovidArrdata.reduce((total, meal) => 
@@ -114,30 +123,28 @@ function App() {
       totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
   }
   async function getArchiveData () {
-       
       const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
       setGetArchive(response.data)
-      setLoadingArchive(false)
-      // return response.data;
-      
+      setLoadingArchive(false) 
+    
+  }
+  const showArchiveData =()=>{
     const totalArchiveData = getArchive.reduce((total, meal) =>  
-      total += parseInt(meal.count_of_case) , 0);
-     
-      console.log(totalArchiveData)
-      setGetArchiveSum( totalArchiveData );
+    total += parseInt(meal.count_of_case) , 0);
+   
+    console.log(totalArchiveData)
+    setGetArchiveSum( totalArchiveData );
   }
-
-  if (isLoading) {
-    return <div className="App"> 
-     <h1>Covid-19 Tracker</h1> 
-      <button className='button' onClick={getCovidCasesAPI}><h3>Begin</h3></button> 
-    </div>;
-  }
-  if(!DataRdy){
-    return <div className="App">Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div className="App"> 
+  //    <h1>Covid-19 Tracker</h1> 
+  //   </div>;
+  // }
+  // if(!DataRdy){
+  //   return <div className="App">Loading...</div>;
+  // } 
   return (
      
       <div className="wrapper">
@@ -177,13 +184,16 @@ function App() {
           </div>
             {/* <button onClick={showCovidCaseNumStatus}> Show Covid Cases Graph</button>  */}
             <div > 
-              
-            <button className='button'  onClick={getAccCovidCases}> Show Covid Cases numbers</button>  
+            <div > 
+            <button className='button' onClick={getCovidCasesAPI}> Get Covid Stats </button> 
+            </div>
+            <h1></h1>
+            <button className='button'  onClick={getAccCovidCases}>Double Click to show Covid numbers</button>  
             <Table > 
               
             <thead >  
-                <th ><h2 > Total Covid Cases Yesterday </h2></th>   
-                <th><h2 > Total Covid Cases Today  </h2></th>  
+                <th ><h2 >{CovidgetSumDataYest==0?"":"Total Covid Cases Yesterday"}  </h2></th>   
+                <th><h2 > {CovidgetSumDataYest==0?"":"Total Covid Cases Today"} </h2></th>  
             </thead>
             <tbody>
               <tr>
@@ -193,18 +203,22 @@ function App() {
               </tr>
             </tbody>
             </Table>
+            <h3>Save stats to database</h3>
+            <button className='button'  onClick={setPostReqAPI}> Save</button> 
+
             <h3><label for="start">Select date:</label>
               <h3> 
                 <input type="date" id="start" name="trip-start" 
                       min="2018-01-01" max="2025-12-31" onChange={(event)=> {setGetDate(event.target.value)}}/>
                 {'\n'}
                 
-                <button className='button'  onClick={getArchiveData}> Double Click to get Archive Data</button>  </h3>
+                <button className='button'  onClick={getArchiveData}> Retrieve Archive Data</button>  </h3>
+                <button className='button'  onClick={showArchiveData}> Show Archived numbers </button>   
                 </h3>
             <Table > 
               
               <thead >
-                  <th><h2 style={{ marginTop:"0px"}}>Total Covid Cases as of {!getDate?"1999-19-19":getDate}  </h2></th>     
+                  <th><h2 style={{ marginTop:"0px"}}>{getArchiveSum==0?"":"Total Covid Cases as of"} {!getDate?"":getDate}</h2></th>     
               </thead>
               <tbody>
                 <tr> 
