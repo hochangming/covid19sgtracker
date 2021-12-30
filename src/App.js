@@ -88,7 +88,7 @@ function App() {
     setLoading(false); 
     setDataRdy(true)
   }) 
-  const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("http://localhost:3001/create", {
+  const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
     pr_date:[paramKey.pr_date],
     age_group:[paramKey.age_group],
     count_of_case: [paramKey.count_of_case] 
