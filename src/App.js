@@ -124,15 +124,16 @@ const setPostReqAPI = ()=>{
   }
   const [msgflag,setMsgflag]= useState(true);
   async function getArchiveData () {
+    if(msgflag){
+      alert("Fetching data...")
+      setMsgflag(false);
+    }
       const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
       setGetArchive(response.data)
       setLoadingArchive(false)  
-      if(msgflag){
-        alert("Fetching data...")
-        setMsgflag(false);
-      }
+
   }
   
   const showArchiveData =()=>{
