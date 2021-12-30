@@ -122,14 +122,19 @@ const setPostReqAPI = ()=>{
       console.log(totaltdy)
       totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
   }
+  const [msgflag,setMsgflag]= useState(true);
   async function getArchiveData () {
       const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
       setGetArchive(response.data)
-      setLoadingArchive(false) 
-    
+      setLoadingArchive(false)  
+      if(msgflag){
+        alert("Fetching data...")
+        setMsgflag(false);
+      }
   }
+  
   const showArchiveData =()=>{
     const totalArchiveData = getArchive.reduce((total, meal) =>  
     total += parseInt(meal.count_of_case) , 0);
@@ -166,7 +171,7 @@ const setPostReqAPI = ()=>{
             </thead>
             <tbody>
               <tr>
-                <td><h4>Unvacinnated Status</h4></td>
+                <td><h4>{condition && "Unvacinnated Status"}</h4></td>
                 {condition && covidVacStatus.result.records.map((item)=>{
               return <td> 
                  <div> Age: {'\n'} 
@@ -185,10 +190,10 @@ const setPostReqAPI = ()=>{
             {/* <button onClick={showCovidCaseNumStatus}> Show Covid Cases Graph</button>  */}
             <div > 
             <div > 
-            <button className='button' onClick={getCovidCasesAPI}> Get Covid Stats </button> 
+            <button className='button' onClick={getCovidCasesAPI}> Retrieve Covid Stats first</button> 
             </div>
             <h1></h1>
-            <button className='button'  onClick={getAccCovidCases}>Double Click to show Covid numbers</button>  
+            <button className='button'  onClick={getAccCovidCases}>Double Click to show Covid stats Retrieved</button>  
             <Table > 
               
             <thead >  
@@ -212,7 +217,7 @@ const setPostReqAPI = ()=>{
                       min="2018-01-01" max="2025-12-31" onChange={(event)=> {setGetDate(event.target.value)}}/>
                 {'\n'}
                 
-                <button className='button'  onClick={getArchiveData}> Retrieve Archive Data</button>  </h3>
+                <button className='button'  onClick={getArchiveData}> Retrieve Archived Data</button>  </h3>
                 <button className='button'  onClick={showArchiveData}> Show Archived numbers </button>   
                 </h3>
             <Table > 
