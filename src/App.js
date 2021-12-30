@@ -88,15 +88,15 @@ function App() {
     setLoading(false); 
     setDataRdy(true)
   }) 
-  const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
-    pr_date:[paramKey.pr_date],
-    age_group:[paramKey.age_group],
-    count_of_case: [paramKey.count_of_case] 
-      })
-    );
+
 }
   const getAccCovidCases =()=>{  
-
+    const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
+      pr_date:[paramKey.pr_date],
+      age_group:[paramKey.age_group],
+      count_of_case: [paramKey.count_of_case] 
+        })
+      );
       var yesterday = new Date(Date.now() - 86400000);
       // console.log(JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12)== JSON.stringify(yesterday.getDate()) ) 
       const totalyest = CovidArrdata.reduce((total, meal) => 
@@ -114,16 +114,14 @@ function App() {
       totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
   }
   async function getArchiveData () {
-    try{   
-      const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/${getDate}`) 
+       
+      const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
       setGetArchive(response.data)
       setLoadingArchive(false)
       // return response.data;
-    }catch (error) { 
-      alert(error); // catches both errors
-    }
+      
     const totalArchiveData = getArchive.reduce((total, meal) =>  
       total += parseInt(meal.count_of_case) , 0);
      
