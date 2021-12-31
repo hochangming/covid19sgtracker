@@ -93,6 +93,10 @@ function App() {
 }
 
 const setPostReqAPI = ()=>{
+  alert("Please wait 3 seconds for data to be saved")
+  Axios.delete("http://localhost:3001/create").then((response)=>{
+    console.log(response);
+  })
   const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
     pr_date:[paramKey.pr_date],
     age_group:[paramKey.age_group],
@@ -100,7 +104,6 @@ const setPostReqAPI = ()=>{
       }) 
     );
     
-    window.location.reload();
     CovidgetSumDataYest == "Did not managed to retrieve data, press button again" ? alert("Unsuccessfull")  :  alert("Saved Successfully") 
 }
 
@@ -122,12 +125,15 @@ const setPostReqAPI = ()=>{
       console.log(totaltdy)
       totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
   }
+
   const [msgflag,setMsgflag]= useState(true);
+
   async function getArchiveData () {
     if(msgflag){
-      alert("Fetching data...")
+      alert("Give a bit of time for data to be fetched from database")
       setMsgflag(false);
     }
+    
       const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
@@ -137,12 +143,17 @@ const setPostReqAPI = ()=>{
   }
   
   const showArchiveData =()=>{
+    
+
     const totalArchiveData = getArchive.reduce((total, meal) =>  
     total += parseInt(meal.count_of_case) , 0);
    
     console.log(totalArchiveData)
     setGetArchiveSum( totalArchiveData );
   }
+  // function reloadPage(){
+  //   window.location.reload();
+  // }
   // if (isLoading) {
   //   return <div className="App"> 
   //    <h1>Covid-19 Tracker</h1> 
@@ -211,13 +222,13 @@ const setPostReqAPI = ()=>{
             </Table>
             <h3>Save stats to database</h3>
             <button className='button'  onClick={setPostReqAPI}> Save</button> 
+            {/* <h3><button className='button'  onClick={reloadPage}>Click here to reload after saving</button></h3> */}
 
             <h3><label for="start">Select date:</label>
               <h3> 
                 <input type="date" id="start" name="trip-start" 
                       min="2018-01-01" max="2025-12-31" onChange={(event)=> {setGetDate(event.target.value)}}/>
                 {'\n'}
-                
                 <button className='button'  onClick={getArchiveData}> Retrieve Archived Data</button>  </h3>
                 <button className='button'  onClick={showArchiveData}> Show Archived numbers </button>   
                 </h3>
