@@ -94,7 +94,7 @@ function App() {
 
 const setPostReqAPI = ()=>{
   alert("Please wait 3 seconds for data to be saved")
-  Axios.delete("http://localhost:3001/create").then((response)=>{
+  Axios.delete("https://covid19sgtracker.herokuapp.com/create").then((response)=>{
     console.log(response);
   })
   const promises = covidCaseNumStatus.result.records.map(paramKey => Axios.post("https://covid19sgtracker.herokuapp.com/create", {
