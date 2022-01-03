@@ -110,17 +110,18 @@ const setPostReqAPI = ()=>{
   const getAccCovidCases =()=>{  
 
       var yesterday = new Date(Date.now() - 86400000);
-      // console.log(JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12)== JSON.stringify(yesterday.getDate()) ) 
+      console.log((JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12)).match('0'+JSON.stringify(yesterday.getDate())))
+      console.log((JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12))  ) 
       const totalyest = CovidArrdata.reduce((total, meal) => 
-      JSON.stringify(meal.pr_date).substring(10, 12) === JSON.stringify(yesterday.getDate())? 
-      total += parseInt(meal.count_of_case) : total, 0);
+      (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(meal.pr_date).substring(10, 12)).match(JSON.stringify(yesterday.getDate() )) || (JSON.stringify(meal.pr_date).substring(10, 12)).match('0'+JSON.stringify(yesterday.getDate()))? 
+      total += parseInt(meal.count_of_case)  : total, 0);
       console.log(totalyest)
       totalyest == 0 ? setCovidgetSumDataYest("Did not managed to retrieve data, press button again") : setCovidgetSumDataYest(totalyest);
 
       var today = new Date(Date.now());
       console.log(JSON.stringify(today.getDate())) 
       const totaltdy = CovidArrdata.reduce((total, meal) => 
-      JSON.stringify(meal.pr_date).substring(10, 12) === JSON.stringify(today.getDate())? 
+      (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(meal.pr_date).substring(10, 12)).match(JSON.stringify(today.getDate() )) || (JSON.stringify(meal.pr_date).substring(10, 12)).match('0'+JSON.stringify(today.getDate()))?
       total += parseInt(meal.count_of_case) : total, 0);
       console.log(totaltdy)
       totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
@@ -129,11 +130,7 @@ const setPostReqAPI = ()=>{
   const [msgflag,setMsgflag]= useState(true);
 
   async function getArchiveData () {
-    if(msgflag){
-      alert("Give a bit of time for data to be fetched from database")
-      setMsgflag(false);
-    }
-    
+ 
       const response  =  await Axios.get(`https://covid19sgtracker.herokuapp.com/archive/${getDate}`) 
        
       console.log(response.data )
@@ -143,25 +140,17 @@ const setPostReqAPI = ()=>{
   }
   
   const showArchiveData =()=>{
-    
+    if(msgflag){
+      alert("Give a bit of time for data to be fetched from database")
+      setMsgflag(false);
+    }
 
     const totalArchiveData = getArchive.reduce((total, meal) =>  
     total += parseInt(meal.count_of_case) , 0);
    
     console.log(totalArchiveData)
     setGetArchiveSum( totalArchiveData );
-  }
-  // function reloadPage(){
-  //   window.location.reload();
-  // }
-  // if (isLoading) {
-  //   return <div className="App"> 
-  //    <h1>Covid-19 Tracker</h1> 
-  //   </div>;
-  // }
-  // if(!DataRdy){
-  //   return <div className="App">Loading...</div>;
-  // } 
+  } 
   return (
      
       <div className="wrapper">
@@ -220,7 +209,7 @@ const setPostReqAPI = ()=>{
               </tr>
             </tbody>
             </Table>
-            <h3>Save stats to database</h3>
+            <h3>Save 1 month stats to database</h3>
             <button className='button'  onClick={setPostReqAPI}> Save</button> 
             {/* <h3><button className='button'  onClick={reloadPage}>Click here to reload after saving</button></h3> */}
 
@@ -235,7 +224,7 @@ const setPostReqAPI = ()=>{
             <Table > 
               
               <thead >
-                  <th><h2 style={{ marginTop:"0px"}}>{getArchiveSum==0?"":"Total Covid Cases as of"} {!getDate?"":getDate}</h2></th>     
+                  <th><h2 style={{ marginTop:"0px"}}>{getArchiveSum==0?"":"Total Local Community Covid Cases as of"} {!getDate?"":getDate}</h2></th>     
               </thead>
               <tbody>
                 <tr> 
