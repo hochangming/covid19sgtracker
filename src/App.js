@@ -110,7 +110,7 @@ const setPostReqAPI = ()=>{
   const getAccCovidCases =()=>{  
 
       var yesterday = new Date(Date.now() - 86400000);
-      console.log((JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12)).match('0'+JSON.stringify(yesterday.getDate())))
+      console.log(yesterday.getMonth() )
       console.log((JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12))  ) 
       const totalyest = CovidArrdata.reduce((total, meal) => 
       (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(meal.pr_date).substring(10, 12)).match(JSON.stringify(yesterday.getDate() )) || (JSON.stringify(meal.pr_date).substring(10, 12)).match('0'+JSON.stringify(yesterday.getDate()))? 
@@ -198,8 +198,8 @@ const setPostReqAPI = ()=>{
             <Table > 
               
             <thead >  
-                <th ><h2 >{CovidgetSumDataYest==0?"":"Total Covid Cases Yesterday"}  </h2></th>   
-                <th><h2 > {CovidgetSumDataYest==0?"":"Total Covid Cases Today"} </h2></th>  
+                <th ><h2 >{CovidgetSumDataYest==0?"":"Local Community Covid Cases Yesterday"}  </h2></th>   
+                <th><h2 > {CovidgetSumDataYest==0?"":"Local Community Covid Cases Today"} </h2></th>  
             </thead>
             <tbody>
               <tr>
