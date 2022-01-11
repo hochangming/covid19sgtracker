@@ -110,21 +110,40 @@ const setPostReqAPI = ()=>{
   const getAccCovidCases =()=>{  
 
       var yesterday = new Date(Date.now() - 86400000);
-      console.log(yesterday.getMonth() )
-      console.log((JSON.stringify(CovidArrdata[111].pr_date).substring(10, 12))  ) 
-      const totalyest = CovidArrdata.reduce((total, meal) => 
-      (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(meal.pr_date).substring(10, 12)).match(JSON.stringify(yesterday.getDate() )) || (JSON.stringify(meal.pr_date).substring(10, 12)).match('0'+JSON.stringify(yesterday.getDate()))? 
-      total += parseInt(meal.count_of_case)  : total, 0);
-      console.log(totalyest)
-      totalyest == 0 ? setCovidgetSumDataYest("Did not managed to retrieve data, press button again") : setCovidgetSumDataYest(totalyest);
+      console.log(yesterday.getDate() === ('1'||'2'||'3'||'4'||'5'||'6'||'7'||'8'||'9'))
+      if(yesterday.getDate() === ('1'||'2'||'3'||'4'||'5'||'6'||'7'||'8'||'9'))
+      {
+        const totalyest = CovidArrdata.reduce((total, meal) => 
+        (JSON.stringify(meal.pr_date).substring(10, 12)) === ('0'+JSON.stringify(yesterday.getDate())) ? 
+        total += parseInt(meal.count_of_case)  : total, 0);
+        console.log(totalyest)
+        totalyest == 0 ? setCovidgetSumDataYest("Did not managed to retrieve data, press button again") : setCovidgetSumDataYest(totalyest);
+      }
+      else{
+        const totalyest = CovidArrdata.reduce((total, meal) => 
+        (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(yesterday.getDate() )) ? 
+        total += parseInt(meal.count_of_case)  : total, 0);
+        console.log(totalyest)
+        totalyest == 0 ? setCovidgetSumDataYest("Did not managed to retrieve data, press button again") : setCovidgetSumDataYest(totalyest);
+      } 
 
       var today = new Date(Date.now());
-      console.log(JSON.stringify(today.getDate())) 
-      const totaltdy = CovidArrdata.reduce((total, meal) => 
-      (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(meal.pr_date).substring(10, 12)).match(JSON.stringify(today.getDate() )) || (JSON.stringify(meal.pr_date).substring(10, 12)).match('0'+JSON.stringify(today.getDate()))?
-      total += parseInt(meal.count_of_case) : total, 0);
-      console.log(totaltdy)
-      totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy)  
+      if(today.getDate() === ('1'||'2'||'3'||'4'||'5'||'6'||'7'||'8'||'9'))
+      { 
+        // console.log(JSON.stringify(today.getDate())) 
+        const totaltdy = CovidArrdata.reduce((total, meal) => 
+        (JSON.stringify(meal.pr_date).substring(10, 12)) === ('0'+JSON.stringify(today.getDate()))?
+        total += parseInt(meal.count_of_case) : total, 0);
+        console.log(totaltdy)
+        totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy) 
+      } else{ 
+        // console.log(JSON.stringify(today.getDate())) 
+        const totaltdy = CovidArrdata.reduce((total, meal) => 
+        (JSON.stringify(meal.pr_date).substring(10, 12)) === (JSON.stringify(today.getDate() ))?
+        total += parseInt(meal.count_of_case) : total, 0);
+        console.log(totaltdy)
+        totaltdy == 0 ? setCovidgetSumDataTdy("Unavailable now, check back again later") :  setCovidgetSumDataTdy(totaltdy) 
+      } 
   }
 
   const [msgflag,setMsgflag]= useState(true);
@@ -187,8 +206,7 @@ const setPostReqAPI = ()=>{
             </tbody>
           </Table>
             
-          </div>
-            {/* <button onClick={showCovidCaseNumStatus}> Show Covid Cases Graph</button>  */}
+          </div> 
             <div > 
             <div > 
             <button className='button' onClick={getCovidCasesAPI}> Retrieve Covid Stats first</button> 
